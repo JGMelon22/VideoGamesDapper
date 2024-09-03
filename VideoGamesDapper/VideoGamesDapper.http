@@ -1,0 +1,6 @@
+@VideoGamesDapper_HostAddress = http://localhost:5159
+
+GET {{VideoGamesDapper_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
