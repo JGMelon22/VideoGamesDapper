@@ -1,5 +1,6 @@
 using System.Data;
 using Npgsql;
+using VideoGamesDapper.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +12,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 # region [Database Registration]
+
 builder.Services.AddScoped<IDbConnection>(x =>
     new NpgsqlConnection(builder.Configuration.GetConnectionString("Default"))
 );
+
 #endregion
+
+# region [Repository Registration]
+
+builder.Services.AddRepositories();
+
+# endregion
 
 
 var app = builder.Build();

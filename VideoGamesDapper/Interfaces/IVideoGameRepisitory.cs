@@ -3,7 +3,7 @@ using VideoGamesDapper.Models;
 
 namespace VideoGamesDapper.Interfaces;
 
-public interface IVideoGameRepisitory
+public interface IVideoGameRepository
 {
     Task<ServiceResponse<ICollection<VideoGameResponse>>> GetAllVideoGamesAsync();
     Task<ServiceResponse<VideoGameResponse>> GetVideoGameByIdAsync(int id);
