@@ -94,7 +94,7 @@ public class VideoGameRepository : IVideoGameRepository
         try
         {
             string sql = @"INSERT INTO video_games(title, publisher, developer, release_date)
-                                   VALUES(@Title, @Publisher, @Developer, @ReleaseDate);";
+                                  VALUES(@Title, @Publisher, @Developer, @ReleaseDate);";
 
             _dbConnection.Open();
 
@@ -102,7 +102,7 @@ public class VideoGameRepository : IVideoGameRepository
             var videoGameResult = await _dbConnection.ExecuteAsync(sql, videoGame);
 
             if (videoGameResult == 0)
-                throw new Exception("An error ocurred when inserting a new register.");
+                throw new Exception("An error ocurred while inserting a new register.");
 
             serviceResponse.Data = videoGameResult;
         }

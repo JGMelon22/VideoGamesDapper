@@ -14,9 +14,5 @@
     <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\VideoGamesDapper.Tests\VideoGamesDapper.Tests.csproj" />
-  </ItemGroup>
-
+  
 </Project>
