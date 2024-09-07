@@ -19,7 +19,7 @@ public class VideoGamesController : ControllerBase
     public async Task<IActionResult> AddVideoGameAsync(VideoGameInput newVideoGame)
     {
         var videoGames = await _videoGameRepository.AddVideoGameAsync(newVideoGame);
-        return videoGames != null
+        return videoGames.Data != 0
             ? Ok(videoGames)
             : BadRequest(videoGames);
     }
@@ -28,7 +28,7 @@ public class VideoGamesController : ControllerBase
     public async Task<IActionResult> UpdateVideoGameAsync(int id, VideoGameInput newVideoGame)
     {
         var videoGame = await _videoGameRepository.UpdateVideoGameAsync(id, newVideoGame);
-        return videoGame != null
+        return videoGame.Data != 0
             ? Ok(videoGame)
             : BadRequest(videoGame);
     }
@@ -37,7 +37,7 @@ public class VideoGamesController : ControllerBase
     public async Task<IActionResult> GetAllVideoGamesAsync()
     {
         var videoGames = await _videoGameRepository.GetAllVideoGamesAsync();
-        return videoGames != null && videoGames.Data.Any()
+        return videoGames != null && videoGames.Data!.Any()
             ? Ok(videoGames)
             : NoContent();
     }
@@ -55,7 +55,7 @@ public class VideoGamesController : ControllerBase
     public async Task<IActionResult> RemoveVideoGameAsync(int id)
     {
         var videoGame = await _videoGameRepository.RemoveVideoGameAsync(id);
-        return videoGame.Success != false
+        return videoGame.Data != 0
             ? NoContent()
             : NotFound(videoGame);
     }

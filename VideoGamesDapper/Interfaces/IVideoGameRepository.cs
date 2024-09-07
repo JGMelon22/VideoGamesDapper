@@ -7,7 +7,7 @@ public interface IVideoGameRepository
 {
     Task<ServiceResponse<ICollection<VideoGameResponse>>> GetAllVideoGamesAsync();
     Task<ServiceResponse<VideoGameResponse>> GetVideoGameByIdAsync(int id);
-    Task<ServiceResponse<VideoGameResponse>> AddVideoGameAsync(VideoGameInput newVideoGame);
-    Task<ServiceResponse<VideoGameResponse>> UpdateVideoGameAsync(int id, VideoGameInput updatedVideoGame);
-    Task<ServiceResponse<bool>> RemoveVideoGameAsync(int id);
+    Task<ServiceResponse<int>> AddVideoGameAsync(VideoGameInput newVideoGame);
+    Task<ServiceResponse<int>> UpdateVideoGameAsync(int id, VideoGameInput updatedVideoGame);
+    Task<ServiceResponse<int>> RemoveVideoGameAsync(int id);
 }
