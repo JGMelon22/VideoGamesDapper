@@ -6,5 +6,5 @@ public record VideoGameResponse
     public string Title { get; init; } = string.Empty!;
     public string Publisher { get; init; } = string.Empty!;
     public string Developer { get; init; } = string.Empty!;
-    public DateTime ReleaseDate { get; init; }
+    public DateTime? ReleaseDate { get; init; }
 }

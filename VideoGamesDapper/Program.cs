@@ -33,6 +33,12 @@ builder.Services.AddMediatR(cfg =>
 
 # endregion
 
+# region [Validaors Registration]
+
+builder.Services.AddValidators();
+
+# endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

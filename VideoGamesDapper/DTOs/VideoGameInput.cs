@@ -4,5 +4,5 @@ public record VideoGameInput(
     string Title,
     string Publisher,
     string Developer,
-    DateTime ReleaseDate
+    DateTime? ReleaseDate
 );

@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VideoGamesDapper.Application.Command;
@@ -11,10 +12,12 @@ namespace VideoGamesDapper.Controllers;
 public class VideoGamesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IValidator<VideoGameInput> _videoGameValidator;
 
-    public VideoGamesController(IMediator mediator)
+    public VideoGamesController(IMediator mediator, IValidator<VideoGameInput> videoGameValidator)
     {
         _mediator = mediator;
+        _videoGameValidator = videoGameValidator;
     }
 
     [HttpGet]
@@ -38,6 +41,10 @@ public class VideoGamesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddVideoGameAsync(VideoGameInput newVideoGame)
     {
+        var validationResult = await _videoGameValidator.ValidateAsync(newVideoGame);
+        if (!validationResult.IsValid)
+            return BadRequest(string.Join(", ", validationResult.Errors));
+
         var videoGame = await _mediator.Send(new AddVideoGameCommand(newVideoGame));
         return videoGame.Data != 0
             ? Ok(videoGame)
@@ -47,6 +54,10 @@ public class VideoGamesController : ControllerBase
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateVideoGameAsync(int id, VideoGameInput updatedVideoGame)
     {
+        var validationResult = await _videoGameValidator.ValidateAsync(updatedVideoGame);
+        if (!validationResult.IsValid)
+            return BadRequest(string.Join(", ", validationResult.Errors));
+
         var videoGame = await _mediator.Send(new UpdateVideoGameCommand(id, updatedVideoGame));
         return videoGame.Data != 0
             ? Ok(videoGame)
