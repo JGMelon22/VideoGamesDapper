@@ -1,4 +1,5 @@
 using System.Data;
+using System.Reflection;
 using Npgsql;
 using VideoGamesDapper.Configuration;
 
@@ -17,7 +18,7 @@ builder.Services.AddScoped<IDbConnection>(x =>
     new NpgsqlConnection(builder.Configuration.GetConnectionString("Default"))
 );
 
-#endregion
+# endregion
 
 # region [Repository Registration]
 
@@ -25,6 +26,12 @@ builder.Services.AddRepositories();
 
 # endregion
 
+# region [ MediatR Registration]
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+# endregion
 
 var app = builder.Build();
 

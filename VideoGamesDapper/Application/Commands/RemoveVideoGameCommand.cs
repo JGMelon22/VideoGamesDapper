@@ -1,6 +1,6 @@
 using MediatR;
 using VideoGamesDapper.Models;
 
-namespace VideoGamesDapper.Application.Queries;
+namespace VideoGamesDapper.Application.Command;
 
-public record RemoveVideoGameCommand(int Id) : IRequest<ServiceResponse<bool>>;
+public record RemoveVideoGameCommand(int Id) : IRequest<ServiceResponse<int>>;
