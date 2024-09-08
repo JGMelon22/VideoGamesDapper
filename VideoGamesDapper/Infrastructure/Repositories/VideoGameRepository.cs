@@ -1,4 +1,5 @@
 using System.Data;
+using System.Reflection;
 using Dapper;
 using VideoGamesDapper.DTOs;
 using VideoGamesDapper.Infrastructure.Mapper;
@@ -10,10 +11,12 @@ namespace VideoGamesDapper.Infrastructure.Repositories;
 public class VideoGameRepository : IVideoGameRepository
 {
     private readonly IDbConnection _dbConnection;
+    private readonly ILogger<VideoGameRepository> _logger;
 
-    public VideoGameRepository(IDbConnection dbConnection)
+    public VideoGameRepository(IDbConnection dbConnection, ILogger<VideoGameRepository> logger)
     {
         _dbConnection = dbConnection;
+        _logger = logger;
     }
 
     public async Task<ServiceResponse<ICollection<VideoGameResponse>>> GetAllVideoGamesAsync()
@@ -23,6 +26,8 @@ public class VideoGameRepository : IVideoGameRepository
 
         try
         {
+            var methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             string sql = @"SELECT id AS Id,
                                     title AS Title,
                                     publisher AS Publisher,
@@ -33,12 +38,17 @@ public class VideoGameRepository : IVideoGameRepository
             _dbConnection.Open();
 
             var videoGames = await _dbConnection.QueryAsync<VideoGame>(sql);
+
+            _logger.LogInformation("{@MethodName} - {videoGames}: {@VideoGames}", methodNameLog, nameof(videoGames), videoGames);
+
             var videoGamesResult = videoGames.Select(x => mapper.VideoGameToVideoGameResult(x)).ToList();
 
             serviceResponse.Data = videoGamesResult;
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "[{ClassName} -> {MethodName}] Error: {ErrorMessage}", GetType().Name, MethodBase.GetCurrentMethod()?.Name, ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -57,6 +67,8 @@ public class VideoGameRepository : IVideoGameRepository
 
         try
         {
+            var methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             string sql = @"SELECT id AS Id,
                                     title AS Title,
                                     publisher AS Publisher,
@@ -68,6 +80,9 @@ public class VideoGameRepository : IVideoGameRepository
             _dbConnection.Open();
 
             var videoGame = await _dbConnection.QueryFirstOrDefaultAsync<VideoGame>(sql, new { Id = id });
+
+            _logger.LogInformation("{@MethodName} - {videoGame}: {@VideoGame}", methodNameLog, nameof(videoGame), videoGame);
+
             var videoGameResult = videoGame
                 ?? throw new Exception($"Video Game with id {id} not found!");
 
@@ -75,6 +90,8 @@ public class VideoGameRepository : IVideoGameRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "[{ClassName} -> {MethodName}] Error: {ErrorMessage}", GetType().Name, MethodBase.GetCurrentMethod()?.Name, ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -93,12 +110,17 @@ public class VideoGameRepository : IVideoGameRepository
 
         try
         {
+            var methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             string sql = @"INSERT INTO video_games(title, publisher, developer, release_date)
                                   VALUES(@Title, @Publisher, @Developer, @ReleaseDate);";
 
             _dbConnection.Open();
 
             var videoGame = mapper.VideoGameInputToVideoGame(newVideoGame);
+
+            _logger.LogInformation("{@MethodName} - {videoGame}: {@VideoGame}", methodNameLog, nameof(videoGame), videoGame);
+
             var videoGameResult = await _dbConnection.ExecuteAsync(sql, videoGame);
 
             if (videoGameResult == 0)
@@ -108,6 +130,8 @@ public class VideoGameRepository : IVideoGameRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "[{ClassName} -> {MethodName}] Error: {ErrorMessage}", GetType().Name, MethodBase.GetCurrentMethod()?.Name, ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -126,6 +150,8 @@ public class VideoGameRepository : IVideoGameRepository
 
         try
         {
+            var methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             string sql = @"UPDATE video_games
                              SET title = @Title,
                                  publisher = @Publisher,
@@ -140,6 +166,8 @@ public class VideoGameRepository : IVideoGameRepository
 
             var videoGameResult = await _dbConnection.ExecuteAsync(sql, videoGame);
 
+            _logger.LogInformation("{@MethodName} - {updatedVideoGame}: {@UpdatedVideoGame}", methodNameLog, nameof(updatedVideoGame), updatedVideoGame);
+
             if (videoGameResult == 0)
                 throw new Exception($"Video Game with id {id} not found!");
 
@@ -147,6 +175,8 @@ public class VideoGameRepository : IVideoGameRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "[{ClassName} -> {MethodName}] Error: {ErrorMessage}", GetType().Name, MethodBase.GetCurrentMethod()?.Name, ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }
@@ -164,6 +194,8 @@ public class VideoGameRepository : IVideoGameRepository
 
         try
         {
+            var methodNameLog = $"[{GetType().Name} -> {MethodBase.GetCurrentMethod()!.ReflectedType!.Name}]";
+
             string sql = @"DELETE
                           FROM video_games
                           WHERE id = @Id;";
@@ -171,6 +203,9 @@ public class VideoGameRepository : IVideoGameRepository
             _dbConnection.Open();
 
             var videoGameResult = await _dbConnection.ExecuteAsync(sql, new { Id = id });
+
+            _logger.LogInformation("{@MethodName} - {videoGameResult}: {@VideoGameResult}", methodNameLog, nameof(videoGameResult), videoGameResult);
+
             if (videoGameResult == 0)
                 throw new Exception($"Video Game with id {id} not found!");
 
@@ -178,6 +213,8 @@ public class VideoGameRepository : IVideoGameRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "[{ClassName} -> {MethodName}] Error: {ErrorMessage}", GetType().Name, MethodBase.GetCurrentMethod()?.Name, ex.Message);
+
             serviceResponse.Success = false;
             serviceResponse.Message = ex.Message;
         }

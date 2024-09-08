@@ -1,6 +1,5 @@
 using VideoGamesDapper.Application.Command;
 using VideoGamesDapper.Application.Handler;
-using VideoGamesDapper.DTOs;
 using VideoGamesDapper.Interfaces;
 using VideoGamesDapper.Models;
 

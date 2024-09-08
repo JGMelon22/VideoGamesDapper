@@ -1,6 +1,7 @@
 using System.Data;
 using System.Reflection;
 using Npgsql;
+using Serilog;
 using VideoGamesDapper.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,9 +34,16 @@ builder.Services.AddMediatR(cfg =>
 
 # endregion
 
-# region [Validaors Registration]
+# region [Validators Registration]
 
 builder.Services.AddValidators();
+
+# endregion
+
+# region [ Serilog Registration ]
+
+builder.Host.UseSerilog((context, config) =>
+    config.ReadFrom.Configuration(context.Configuration));
 
 # endregion
 
