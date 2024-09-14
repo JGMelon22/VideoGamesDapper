@@ -24,7 +24,7 @@ public class VideoGamesController : ControllerBase
     public async Task<IActionResult> GetAllVideoGamesAsync()
     {
         var videoGames = await _mediator.Send(new GetVideoGamesQuery());
-        return videoGames != null && videoGames.Data!.Any()
+        return videoGames.Data != null && videoGames.Data!.Any()
             ? Ok(videoGames)
             : NoContent();
     }
@@ -33,7 +33,7 @@ public class VideoGamesController : ControllerBase
     public async Task<IActionResult> GetVideoGameByIdAsync(int id)
     {
         var videoGame = await _mediator.Send(new GetVideoGameByIdQuery(id));
-        return videoGame != null
+        return videoGame.Data != null
             ? Ok(videoGame)
             : NotFound(videoGame);
     }

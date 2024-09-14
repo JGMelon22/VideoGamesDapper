@@ -40,6 +40,13 @@ builder.Services.AddValidators();
 
 # endregion
 
+# region [Otel Registration]
+
+builder.Services.AddTracing(builder.Configuration);
+builder.Services.AddMetrics(builder.Configuration);
+
+# endregion
+
 # region [ Serilog Registration ]
 
 builder.Host.UseSerilog((context, config) =>

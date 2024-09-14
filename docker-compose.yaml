@@ -1,0 +1,61 @@
+networks:
+  monitoring:
+    driver: bridge
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./tools/telemetry/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "8888:8888"
+      - "8889:8889"
+      - "4317:4317"
+    networks:
+      - monitoring
+    depends_on:
+      - jaeger
+
+  prometheus:
+    image: bitnami/prometheus
+    container_name: prometheus
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./tools/telemetry/prometheus.yaml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    ports:
+      - 9090:9090
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./tools/telemetry/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/all.yaml
+    ports:
+      - 3000:3000
+    networks:
+      - monitoring
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - 16686:16686
+      - 14268
+      - 14250
+    networks:
+      - monitoring
